@@ -1,12 +1,9 @@
 package main
 
-
+import "fmt"
 
 func main() {
-	ch:= make(chan int)
-	go func(){
-		ch<-42
-	}()
-	val:= <-ch
-	println(val)
+	slice:=[]int{1,3,5}
+	slice = append(slice, 2,4)
+	fmt.Println(slice)
 }
