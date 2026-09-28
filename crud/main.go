@@ -2,10 +2,14 @@ package main
 
 import (
 	"context"
+	"crud/internal/service"
+	"crud/internal/store"
+	"crud/internal/transport"
 	"fmt"
 	"log"
 	"os"
 
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -36,4 +40,22 @@ func main() {
 	}
 
 	fmt.Println("Conectado a MongoDB Atlas:", dbName)
+
+	//OBTENER DATOS
+	db:=client.Database(dbName)
+	tareaStore:=store.NewTareaStore(db)
+	tareaService:=service.NewTareaService(tareaStore)
+	tareaHandler:=transport.NewTareaHandler(tareaService)
+
+	r:=gin.Default()
+
+	r.POST("/tareas", tareaHandler.Crear)
+	r.GET("/tareas", tareaHandler.ObtenerTodos)
+	r.GET("/tareas/:id", tareaHandler.ObtenerPorID)
+	r.PUT("/tareas/:id", tareaHandler.Actualizar)
+	r.DELETE("/tareas/:id", tareaHandler.Eliminar)
+
+	r.Run(":8080")
+
+
 }
