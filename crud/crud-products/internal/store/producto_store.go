@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"crud-products/internal/model"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -20,6 +21,7 @@ func NewProductoStore(db *mongo.Database) *ProductoStore {
 }
 
 func (ps *ProductoStore) Crear(prd model.Producto) error {
+	prd.FechaCreacion = time.Now()
 	_, err := ps.collection.InsertOne(context.TODO(), prd)
 	if err != nil {
 		return err
